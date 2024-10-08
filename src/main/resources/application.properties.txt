@@ -1,0 +1,2 @@
+spring.application.name=practica-crud-rapido
+server.port=8001
