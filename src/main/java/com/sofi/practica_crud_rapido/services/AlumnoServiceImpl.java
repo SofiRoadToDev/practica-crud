@@ -1,8 +1,10 @@
 package com.sofi.practica_crud_rapido.services;
 
+import com.sofi.practica_crud_rapido.DTOs.AlumnoDTO;
 import com.sofi.practica_crud_rapido.entities.Alumno;
 import com.sofi.practica_crud_rapido.exceptions.ElementDuplicatedException;
 import com.sofi.practica_crud_rapido.exceptions.ElementNotFoundException;
+import com.sofi.practica_crud_rapido.mappers.AlumnoMapper;
 import com.sofi.practica_crud_rapido.repositories.AlumnoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,20 +20,28 @@ public class AlumnoServiceImpl implements AlumnoService{
 
     private AlumnoRepository alumnoRepository;
     @Override
-    public Alumno findById(Long id) throws ElementNotFoundException{
-        return alumnoRepository.findById(id)
-                .orElseThrow(() -> new ElementNotFoundException(String.format("Alumno id: %s no encontrado", id)));
-    }
-
-    @Override
-    public Set<Alumno> findAll() {
-        return StreamSupport.stream(alumnoRepository.findAll().spliterator(), false).collect(Collectors.toSet());
+    public AlumnoDTO findById(Long id) throws ElementNotFoundException{
+        return  AlumnoMapper.INSTANCE.alumnoToAlumnoDTO(
+                alumnoRepository.findById(id)
+                        .orElseThrow(() -> new ElementNotFoundException(String.format("Alumno id: %s no encontrado", id)))
+        );
 
     }
 
     @Override
-    public Alumno findByDni(String dni) throws ElementNotFoundException{
-        return alumnoRepository.findByDni(dni).orElseThrow(() ->  new ElementNotFoundException(String.format("Alumno dni: %s no encontrado", dni)));
+    public Set<AlumnoDTO> findAll() {
+        return  AlumnoMapper.INSTANCE.setAlumnotoSetAlumnoDTO(
+                StreamSupport.stream(alumnoRepository.findAll().spliterator(), false).collect(Collectors.toSet())
+        );
+
+    }
+
+    @Override
+    public AlumnoDTO findByDni(String dni) throws ElementNotFoundException{
+        return
+                AlumnoMapper.INSTANCE.alumnoToAlumnoDTO(
+                        alumnoRepository.findByDni(dni).orElseThrow(() ->  new ElementNotFoundException(String.format("Alumno dni: %s no encontrado", dni))));
+
     }
 
     @Override
@@ -42,17 +52,17 @@ public class AlumnoServiceImpl implements AlumnoService{
     }
 
     @Override
-    public Alumno crearAlumno(Alumno alumno) {
+    public AlumnoDTO crearAlumno(Alumno alumno) {
        Optional<Alumno> enDb = alumnoRepository.findByDni(alumno.getDni());
 
         if(enDb.isPresent()){
             throw new ElementDuplicatedException(" El alumno dni: "+alumno.getDni()+ " ya existe");
         }
-        return alumnoRepository.save(alumno);
+        return AlumnoMapper.INSTANCE.alumnoToAlumnoDTO(alumnoRepository.save(alumno));
     }
 
     @Override
-    public Alumno editarAlumno(Alumno alumno) {
+    public AlumnoDTO editarAlumno(Alumno alumno) {
         Alumno alumnoEnDb = alumnoRepository.findById(alumno.getId())
                 .orElseThrow(() -> new ElementNotFoundException(String.format("No se puede editar al alumno id: %s no encontrado", alumno.getId())));
         alumnoEnDb = alumno;
