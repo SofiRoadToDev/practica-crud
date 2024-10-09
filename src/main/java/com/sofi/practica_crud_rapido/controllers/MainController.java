@@ -25,6 +25,7 @@ import java.net.URI;
 @AllArgsConstructor
 @RequestMapping("/api/v1")
 @Log4j2
+@CrossOrigin("http://localhost:4200")
 public class MainController {
 
     private AlumnoService alumnoService;
