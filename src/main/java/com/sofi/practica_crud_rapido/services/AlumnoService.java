@@ -18,8 +18,8 @@ public interface AlumnoService {
 
     void deleteAlumno(Long id) throws ElementNotFoundException;
 
-    AlumnoDTO crearAlumno(Alumno alumno) ;
+    AlumnoDTO crearAlumno(AlumnoDTO alumnoDTO) ;
 
-    AlumnoDTO editarAlumno(Alumno alumno) ;
+    AlumnoDTO editarAlumno(AlumnoDTO alumnoDTO, Long id) ;
 
 }

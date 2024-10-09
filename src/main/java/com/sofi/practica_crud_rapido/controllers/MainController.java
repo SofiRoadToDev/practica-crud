@@ -48,7 +48,7 @@ public class MainController {
 
     @PostMapping("/alumnos")
     public ResponseEntity<?>crearAlumno(@RequestBody @Valid AlumnoDTO alumnoDTO) throws ElementDuplicatedException  {
-        AlumnoDTO saved = alumnoService.crearAlumno(AlumnoMapper.INSTANCE.alumnoDtoToAlumno(alumnoDTO));
+        AlumnoDTO saved = alumnoService.crearAlumno(alumnoDTO);
         URI alumnoUri = UriComponentsBuilder
                 .fromPath("/alumnos/{id}")
                 .buildAndExpand(saved.getId())
@@ -56,9 +56,9 @@ public class MainController {
         return ResponseEntity.created(alumnoUri).build();
     }
 
-    @PutMapping("/alumnos")
-    public ResponseEntity<?>editarAlumno(@RequestBody @Valid AlumnoDTO alumnoDTO) throws ElementNotFoundException {
-        alumnoService.editarAlumno(AlumnoMapper.INSTANCE.alumnoDtoToAlumno(alumnoDTO));
+    @PutMapping("/alumnos/{id}")
+    public ResponseEntity<?>editarAlumno(@RequestBody @Valid AlumnoDTO alumnoDTO, @PathVariable Long id) throws ElementNotFoundException {
+        alumnoService.editarAlumno(alumnoDTO, id);
         return ResponseEntity.noContent().build();
     }
 
