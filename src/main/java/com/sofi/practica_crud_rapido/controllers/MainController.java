@@ -7,10 +7,15 @@ import com.sofi.practica_crud_rapido.exceptions.ElementNotFoundException;
 import com.sofi.practica_crud_rapido.mappers.AlumnoMapper;
 import com.sofi.practica_crud_rapido.services.AlumnoService;
 import com.sofi.practica_crud_rapido.services.CursoService;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,6 +24,7 @@ import java.net.URI;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1")
+@Log4j2
 public class MainController {
 
     private AlumnoService alumnoService;
@@ -35,14 +41,14 @@ public class MainController {
     }
 
     @DeleteMapping("/alumnos/{id}")
-    public ResponseEntity<?>borrarAlumno(@PathVariable Long id) throws ElementNotFoundException {
+    public ResponseEntity<?>borrarAlumno(@PathVariable Long id) throws  ElementNotFoundException {
         alumnoService.deleteAlumno(id);
         return ResponseEntity.status(204).body("Borrado exitoso");
     }
 
     @PostMapping("/alumnos")
-    public ResponseEntity<?>crearAlumno(@RequestBody Alumno alumno) throws ElementDuplicatedException {
-        AlumnoDTO saved = alumnoService.crearAlumno(alumno);
+    public ResponseEntity<?>crearAlumno(@RequestBody @Valid AlumnoDTO alumnoDTO) throws ElementDuplicatedException  {
+        AlumnoDTO saved = alumnoService.crearAlumno(AlumnoMapper.INSTANCE.alumnoDtoToAlumno(alumnoDTO));
         URI alumnoUri = UriComponentsBuilder
                 .fromPath("/alumnos/{id}")
                 .buildAndExpand(saved.getId())
@@ -51,7 +57,8 @@ public class MainController {
     }
 
     @PutMapping("/alumnos")
-    public ResponseEntity<?>editarAlumno(@RequestBody Alumno alumno) throws ElementNotFoundException {
+    public ResponseEntity<?>editarAlumno(@RequestBody @Valid AlumnoDTO alumnoDTO) throws ElementNotFoundException {
+        alumnoService.editarAlumno(AlumnoMapper.INSTANCE.alumnoDtoToAlumno(alumnoDTO));
         return ResponseEntity.noContent().build();
     }
 

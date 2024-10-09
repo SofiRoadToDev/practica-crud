@@ -8,6 +8,7 @@ import com.sofi.practica_crud_rapido.mappers.AlumnoMapper;
 import com.sofi.practica_crud_rapido.repositories.AlumnoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class AlumnoServiceImpl implements AlumnoService{
     }
 
     @Override
-    public AlumnoDTO crearAlumno(Alumno alumno) {
+    public AlumnoDTO crearAlumno(Alumno alumno)  {
        Optional<Alumno> enDb = alumnoRepository.findByDni(alumno.getDni());
 
         if(enDb.isPresent()){
