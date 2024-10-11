@@ -67,8 +67,7 @@ public class AlumnoServiceImpl implements AlumnoService{
     public AlumnoDTO editarAlumno(AlumnoDTO alumnoDTO, Long id) {
         Alumno alumnoEnDb = alumnoRepository.findById(id)
                 .orElseThrow(() -> new ElementNotFoundException(String.format("No se puede editar al alumno id: %s no encontrado", id)));
-        BeanUtils.copyProperties(alumnoDTO, alumnoEnDb);
-        alumnoRepository.save(alumnoEnDb);
-        return null;
+        BeanUtils.copyProperties(alumnoDTO, alumnoEnDb, "id");
+        return AlumnoMapper.INSTANCE.alumnoToAlumnoDTO( alumnoRepository.save(alumnoEnDb));
     }
 }

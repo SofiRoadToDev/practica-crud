@@ -49,6 +49,7 @@ public class MainController {
 
     @PostMapping("/alumnos")
     public ResponseEntity<?>crearAlumno(@RequestBody @Valid AlumnoDTO alumnoDTO) throws ElementDuplicatedException  {
+        System.out.println(" peticion llegando a post");
         AlumnoDTO saved = alumnoService.crearAlumno(alumnoDTO);
         URI alumnoUri = UriComponentsBuilder
                 .fromPath("/alumnos/{id}")
@@ -59,8 +60,8 @@ public class MainController {
 
     @PutMapping("/alumnos/{id}")
     public ResponseEntity<?>editarAlumno(@RequestBody @Valid AlumnoDTO alumnoDTO, @PathVariable Long id) throws ElementNotFoundException {
-        alumnoService.editarAlumno(alumnoDTO, id);
-        return ResponseEntity.noContent().build();
+        System.out.println(" Metodo de actualizar "+id);
+        return ResponseEntity.ok( alumnoService.editarAlumno(alumnoDTO, id));
     }
 
     @GetMapping("/cursos")
